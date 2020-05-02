@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <title>K9 Overhaul</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    
+    <div id="app" v-show="visible">
+
+      <div class="k9_menu_base">
+        <div class="k9_menu_header">
+          {{ menu }}
+        </div>
+        <div v-if="buttons.length > 0" class="k9_menu_body">
+          <div v-for="(button, buttonIndex) in buttons" :key="buttonIndex" class="k9_button" v-bind:class="{ k9_button_hovered: selectedButton == buttonIndex + 1 }">
+            {{ button.name }}
+            <span v-if="button.type == 'submenu'" style="font-size: 100%; right: 10px; position: absolute;">
+              <i class="fa fa-arrow-right"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+
+    <script src="https://use.fontawesome.com/4802736edb.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> <!-- DEVELOPMENT -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> --> <!-- PRODUCTION -->
+    <script src="events.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
