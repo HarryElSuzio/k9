@@ -37,7 +37,7 @@ body {
   border-radius: 10px 10px 0px 0px;
   font-size: var(--menu-header-font-size);
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: 400;
 }
 
 .k9_menu_body {
@@ -63,4 +63,20 @@ body {
   font-size: 100%; 
   right: 10px;
   position: absolute;
+}
+
+.k9_slider_icon_right {
+  font-size: 150%; 
+  right: 10px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.k9_slider_icon_left {
+  font-size: 150%; 
+  left: 10px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }

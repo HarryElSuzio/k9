@@ -24,6 +24,9 @@ const app = new Vue({
     SetSelectedComponent(data) {
       this.selectedComponent = data.component
     },
+    UpdateRangeSlider(data) {
+      this.components[this.selectedComponent - 1].Title = data.Title
+    }
   },
 
   // EVENTS
@@ -33,5 +36,6 @@ const app = new Vue({
     RegisterEvent("hide_menu", this.HideMenu);
     RegisterEvent("change_menu", this.ChangeMenu);
     RegisterEvent("set_selected_component", this.SetSelectedComponent);
+    RegisterEvent("update_range_slider", this.UpdateRangeSlider);
   }
 })

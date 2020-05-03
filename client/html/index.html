@@ -8,14 +8,35 @@
     <div id="app" v-show="visible">
       <div class="k9_menu_base">
         <div class="k9_menu_header">
-          {{ menu }} {{ selectedComponent }}
+          {{ menu }}
         </div>
         <div v-if="components.length > 0" class="k9_menu_body">
           <div v-for="(component, componentIndex) in components" :key="componentIndex" class="k9_button" v-bind:class="{ k9_button_hovered: selectedComponent == componentIndex + 1 }">
-            {{ component.Title }}
-            <span v-if="component.Type == 'submenu'" class="k9_button_submenu_icon">
-              <i class="fa fa-arrow-right"></i>
-            </span>
+            
+            <!-- Button -->
+            <div v-if="component.Type == 'button'">
+              {{ component.Title }}
+            </div>
+
+            <!-- Sub Menu -->
+            <div v-if="component.Type == 'submenu'">
+              {{ component.Title }}
+              <span v-if="component.Type == 'submenu'" class="k9_button_submenu_icon">
+                <i class="fa fa-forward"></i>
+              </span>
+            </div>
+
+            <!-- Slider -->
+            <div v-if="component.Type == 'rangeslider'">
+              {{ component.Title }}
+              <span v-if="component.Type == 'rangeslider'" class="k9_slider_icon_left">
+                <i class="fa fa-arrow-circle-left"></i>
+              </span>
+              <span v-if="component.Type == 'rangeslider'" class="k9_slider_icon_right">
+                <i class="fa fa-arrow-circle-right"></i>
+              </span>
+            </div>
+
           </div>
         </div>
       </div>

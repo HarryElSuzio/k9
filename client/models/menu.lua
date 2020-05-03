@@ -76,6 +76,8 @@ function Menu.Create(title, description)
         comp:OpenMenu()
       elseif comp.Type == "button" then
         comp:Fire()
+      elseif comp.Type == "rangeslider" then
+        comp:Fire()
       end
     else
       print("No component selected")
@@ -117,7 +119,6 @@ function Menu.CreateSubMenu(title, parent, base, description)
     })
     self.Opened = true
     base.OpenedMenu = self
-    print()
   end
 
   function newMenu:GoUp()
@@ -160,13 +161,16 @@ function Menu.CreateSubMenu(title, parent, base, description)
         comp:OpenMenu()
       elseif comp.Type == "button" then
         comp:Fire()
+      elseif comp.Type == "rangeslider" then
+        comp:Fire()
       end
     else
       print("No component selected")
     end
   end
 
-  table.insert(parent.Components, newMenu)
+  newMenu.ComponentIndex = #parent.Components + 1
+  parent.Components[newMenu.ComponentIndex] = newMenu
   return newMenu
 end
 
@@ -180,9 +184,53 @@ function Menu.CreateButton(title, action, base, parent, description)
   newButton.Parent = parent
 
   function newButton:Fire()
-    action()
+    self.Action()
   end
 
-  table.insert(parent.Components, newButton)
+  newButton.ComponentIndex = #parent.Components + 1
+  parent.Components[newButton.ComponentIndex] = newButton
   return newButton
+end
+
+function Menu.CreateRangeSlider(title, action, base, parent, inc, min, max, value, description)
+  local newSlider = {}
+  
+  newSlider.Title = title
+  newSlider.Type = "rangeslider"
+  newSlider.Description = description or ""
+  newSlider.Value = value or max / 2
+  newSlider.Action = action
+  newSlider.Parent = parent
+
+  function newSlider:GoRight()
+    local next = self.Value + inc
+    if next > max then
+      next = min
+    end
+    self.Value = next
+    self.Action(self, "changed", self.Value)
+  end
+
+  function newSlider:GoLeft()
+    local next = self.Value - inc
+    if next < min then
+      next = max
+    end
+    self.Value = next
+    self.Action(self, "changed", self.Value)
+  end
+
+  function newSlider:Fire()
+    self.Action(self, "selected", self.Value)
+  end
+
+  function newSlider:UpdateText(label)
+    NUI.Fire("update_range_slider", {
+      Title = label
+    })
+  end
+
+  newSlider.ComponentIndex = #parent.Components + 1
+  parent.Components[newSlider.ComponentIndex] = newSlider
+  return newSlider
 end
