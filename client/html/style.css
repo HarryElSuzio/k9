@@ -21,8 +21,12 @@ body {
 }
 
 .k9_menu_base {
+  position: absolute;
   width: 350px;
   max-height: 550px;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .k9_menu_header {
@@ -56,5 +60,7 @@ body {
 }
 
 .k9_button_submenu_icon {
-
+  font-size: 100%; 
+  right: 10px;
+  position: absolute;
 }

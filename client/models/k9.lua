@@ -6,43 +6,44 @@ function K9.New()
   setmetatable(newK9, K9)
 
   newK9.name = "Flex"
-  newK9.model = "DOG_MODEL_HERE"
+  newK9.model = "a_c_rottweiler"
+  newK9.speed = 0.2
+  newK9.spawned = false
+  newK9.spawnedHandle = 0
 
   return newK9
 end
 
-function K9:Spawn()
+function K9:SetNewK9(data)
+  self.model = data.model
+  if self.spawned then
+    self:Despawn()
+    self:Spawn()
+  end
+end
 
+function K9:Spawn()
+  local loadingThresh = GetGameTimer() + 5000
+  local model = GetHashKey(self.model)
+  RequestModel(model)
+  while not HasModelLoaded(model) do
+    Citizen.Wait(0)
+    if loadingThresh < GetGameTimer() then
+      return
+    end
+  end
+
+  local playerPed = PlayerPedId()
+  local playerPos = GetEntityCoords(playerPed)
+  local heading = GetEntityHeading(playerPed)
+  self.spawnedHandle = CreatePed(28, model, playerPos.x, playerPos.y, playerPos.z, heading, true, true)
+  self.spawned = true
+
+  SetPedMoveRateOverride(self.spawnedHandle, 10)
+  TaskFollowToOffsetOfEntity(self.spawnedHandle, playerPed, 0.0, 0.0, 0.0, 100, -1, 1, true)
 end
 
 function K9:Despawn()
-
-end
-
-function K9:ChangeModel()
-  
-end
-
-function K9:EnterVehicle()
-
-end
-
-function K9:ExitVehicle()
-
-end
-
-function K9:SearchVehicle()
-  
-end
-
-function K9:SearchPerson()
-
-end
-
-function K9:FindPerson()
-
-end
-
-function K9:PlayTask()
-
+  DeletePed(self.spawnedHandle)
+  self.spawned = false
 end

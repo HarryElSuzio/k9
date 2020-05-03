@@ -4,8 +4,8 @@ const app = new Vue({
     resourcename: "k9",
     visible: false,
     menu: "K9",
-    buttons: [],
-    selectedButton: 0
+    components: [],
+    selectedComponent: 1
   },
   methods: {
     SetResourceName(data) {
@@ -18,12 +18,11 @@ const app = new Vue({
       this.visible = false;
     },
     ChangeMenu(data) {
-      this.menu = data.name;
-      this.buttons = data.buttons
+      this.menu = data.title;
+      this.components = data.components
     },
-    SetSelectedButton(data) {
-      console.log(`button: ${data.button}`);
-      this.selectedButton = data.button
+    SetSelectedComponent(data) {
+      this.selectedComponent = data.component
     },
   },
 
@@ -33,6 +32,6 @@ const app = new Vue({
     RegisterEvent("show_menu", this.ShowMenu);
     RegisterEvent("hide_menu", this.HideMenu);
     RegisterEvent("change_menu", this.ChangeMenu);
-    RegisterEvent("set_selected_button", this.SetSelectedButton);
+    RegisterEvent("set_selected_component", this.SetSelectedComponent);
   }
 })
