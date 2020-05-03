@@ -26,4 +26,5 @@ server_script "server/server.lua"
 -- Client Base Scripts
 client_script "client/models/*.lua"
 client_script "client/menu/models/*.lua"
+client_script "client/utils.lua"
 client_script "client/client.lua"
