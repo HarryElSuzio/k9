@@ -44,3 +44,9 @@ function Utils.GetClosestPlayer()
     
   end
 end
+
+function Utils.RegisterKeyMap(cmd, pressAction, releaseAction, description, type, key)
+  RegisterCommand("+"..cmd, pressAction, false)
+  RegisterCommand("-"..cmd, releaseAction, false)
+  RegisterKeyMapping("+"..cmd, description, type, key)
+end
