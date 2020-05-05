@@ -56,51 +56,60 @@ end, K9Menu, K9Actions)
 -- K9 Animations
 local K9Animations = Menu.CreateSubMenu("Animations", K9Menu, K9Menu, "K9 Aniamtions")
 
+-- KEYBOARD CONTROLS
+Utils.RegisterKeyMap("follow", function()
+  dog:Follow()
+end, function() end, "K9 Following toggle", "keyboard", "g")
 
--- Control Handler
-Citizen.CreateThread(function()
-  while true do
-    Citizen.Wait(0)
+Utils.RegisterKeyMap("open_menu", function()
+  if not K9Menu.Opened then
+    K9Menu:OpenMenu()
+    K9Menu.Opened = true
+  end
+end, function() end, "Open the K9 menu", "keyboard", "insert")
 
-    -- INSERT
-    if IsControlJustReleased(0, 121) then
-      if not K9Menu.Opened then
-        K9Menu:OpenMenu()
-        K9Menu.Opened = true
-      end
-    end
+Utils.RegisterKeyMap("menu_select", function()
+  if K9Menu.Opened then
+    K9Menu.OpenedMenu:FireComponent()
+  end
+end, function() end, "Select K9 menu option", "keyboard", "return")
 
-    -- ENTER
-    if IsControlJustPressed(0, 191) then
-      K9Menu.OpenedMenu:FireComponent()
-    end
+Utils.RegisterKeyMap("menu_up", function()
+  if K9Menu.Opened then
+    K9Menu.OpenedMenu:GoUp()
+  end
+end, function() end, "K9 menu up", "keyboard", "up")
 
-    -- BACKSPACE
-    if IsControlJustPressed(0, 194) then
-      K9Menu.OpenedMenu:GoBack()
-    end
+Utils.RegisterKeyMap("menu_down", function()
+  if K9Menu.Opened then
+    K9Menu.OpenedMenu:GoDown()
+  end
+end, function() end, "K9 menu down", "keyboard", "down")
 
-    -- UP
-    if IsControlJustPressed(0, 172) then
-      K9Menu.OpenedMenu:GoUp()
-    -- DOWN
-    elseif IsControlJustPressed(0, 173) then
-      K9Menu.OpenedMenu:GoDown()
-    end
-
-
+Utils.RegisterKeyMap("menu_left", function()
+  if K9Menu.Opened then
     local selectedComponent = K9Menu.OpenedMenu.Components[K9Menu.OpenedMenu.Hovered]
-
     if selectedComponent then
       if selectedComponent.Type == "rangeslider" then
-        -- Left
-        if IsControlJustPressed(0, 174) then
-          selectedComponent:GoLeft()
-        -- Right
-        elseif IsControlJustPressed(0, 175) then
-          selectedComponent:GoRight()
-        end
+        selectedComponent:GoLeft()
       end
     end
   end
-end)
+end, function() end, "K9 menu left", "keyboard", "left")
+
+Utils.RegisterKeyMap("menu_right", function()
+  if K9Menu.Opened then
+    local selectedComponent = K9Menu.OpenedMenu.Components[K9Menu.OpenedMenu.Hovered]
+    if selectedComponent then
+      if selectedComponent.Type == "rangeslider" then
+        selectedComponent:GoRight()
+      end
+    end
+  end
+end, function() end, "K9 menu right", "keyboard", "right")
+
+Utils.RegisterKeyMap("menu_back", function()
+  if K9Menu.Opened then
+    K9Menu.OpenedMenu:GoBack()
+  end
+end, function() end, "K9 menu back", "keyboard", "delete")
