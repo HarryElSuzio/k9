@@ -26,6 +26,22 @@ local Animations = {
   }
 }
 
+-- Adding Relationship Groups
+local Handler = GetHashKey("HANDLER")
+local K9Unit = GetHashKey("K9")
+local K9Target = GetHashKey("K9TARGET")
+AddRelationshipGroup("handler", Handler)
+AddRelationshipGroup("k9", K9Unit)
+AddRelationshipGroup("k9target", K9Target)
+
+-- K9 / Handler Relations
+SetRelationshipBetweenGroups(1, Handler, K9Unit)
+SetRelationshipBetweenGroups(0, K9Unit, Handler)
+
+-- K9 / Target Relations
+SetRelationshipBetweenGroups(5, K9Target, K9Unit)
+SetRelationshipBetweenGroups(5, K9Unit, K9Target)
+
 function K9.New()
   local newK9 = {}
   setmetatable(newK9, K9)
@@ -70,18 +86,32 @@ function K9:Spawn()
   self.spawned = true
 
   SetBlockingOfNonTemporaryEvents(self.spawnedHandle, true)
+  GiveWeaponToPed(self.spawnedHandle, GetHashKey("WEAPON_ANIMAL"), 200, true, true);
 
-  local fleeAttributes = {5, 46}
+  local fleeAttributes = {0, 3, 5, 46}
   for _, v in pairs(fleeAttributes) do
     SetPedFleeAttributes(self.spawnedHandle, v, true)
   end
 
+  SetPedRelationshipGroupHash(PlayerPedId(), Handler)
+  SetPedRelationshipGroupHash(self.spawnedHandle, K9Unit)
+
   self:Stay()
+
+  -- Citizen.CreateThread(function()
+  --   while true do
+  --     Citizen.Wait(0)
+
+
+
+  --   end
+  -- end)
 end
 
 function K9:Despawn()
   if not self.spawnedHandle then return end
   DeletePed(self.spawnedHandle)
+  SetPedRelationshipGroupHash(PlayerPedId(), GetHashKey("PLAYER"))
   self.spawned = false
   self.CurrentAction = Actions.Stay
   self.spawnedHandle = nil
@@ -90,9 +120,14 @@ end
 -- Actions
 function K9:Follow()
   if not self.spawnedHandle then return end
-  ClearPedTasks(self.spawnedHandle)
-  TaskFollowToOffsetOfEntity(self.spawnedHandle, PlayerPedId(), 0.0, 0.0, 0.0, 5.0, -1, 0.0, true)
-  self.CurrentAction = Actions.Follow
+  if not self.CurrentAction == Actions.Follow then
+    ClearPedTasks(self.spawnedHandle)
+    TaskFollowToOffsetOfEntity(self.spawnedHandle, PlayerPedId(), 0.0, 0.0, 0.0, 5.0, -1, 0.0, true)
+    self.CurrentAction = Actions.Follow
+  else
+    ClearPedTasks(self.spawnedHandle)
+    self.CurrentAction = Actions.Stay
+  end
 end
 
 function K9:Stay()
@@ -106,13 +141,17 @@ function K9:Search()
   -- use module functions
 end
 
-function K9:Attack(ped)
+function K9:Attack()
   if not self.spawnedHandle then return end
   ClearPedTasks(self.spawnedHandle)
+  local found, target = GetEntityPlayerIsFreeAimingAt(PlayerId())
+  if found then
+    if IsEntityAPed(target) then
+      TaskCombatPed(self.spawnedHandle, target, 0, 16)
+      SetPedRelationshipGroupHash(target, K9Target)
+    end
+  end
 
-  local target = GetPlayerTargetEntity(PlayerId(), entity)
-
-  -- TaskCombatPed(self.spawnedHandle, PlayerPedId(), 0, 16)
   self.CurrentAction = Actions.Attack
 end
 
