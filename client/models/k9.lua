@@ -120,7 +120,8 @@ end
 -- Actions
 function K9:Follow()
   if not self.spawnedHandle then return end
-  if not self.CurrentAction == Actions.Follow then
+  if self.CurrentAction ~= Actions.Follow then
+    print("TRIGGERED")
     ClearPedTasks(self.spawnedHandle)
     TaskFollowToOffsetOfEntity(self.spawnedHandle, PlayerPedId(), 0.0, 0.0, 0.0, 5.0, -1, 0.0, true)
     self.CurrentAction = Actions.Follow
@@ -138,7 +139,9 @@ end
 
 function K9:Search()
   if not self.spawnedHandle then return end
-  -- use module functions
+  ModuleManager:CallFunc("GetVehicleInventory", "trunk", "000000", function(foundIllegal)
+    print(foundIllegal)
+  end)
 end
 
 function K9:Attack()
@@ -146,7 +149,9 @@ function K9:Attack()
   ClearPedTasks(self.spawnedHandle)
   local found, target = GetEntityPlayerIsFreeAimingAt(PlayerId())
   if found then
+    print("Found")
     if IsEntityAPed(target) then
+      print("ATTACKING")
       TaskCombatPed(self.spawnedHandle, target, 0, 16)
       SetPedRelationshipGroupHash(target, K9Target)
     end

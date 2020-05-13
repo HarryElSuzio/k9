@@ -57,7 +57,7 @@ end, K9Menu, K9Actions)
 local K9Animations = Menu.CreateSubMenu("Animations", K9Menu, K9Menu, "K9 Aniamtions")
 
 -- KEYBOARD CONTROLS
-Utils.RegisterKeyMap("follow", function()
+Utils.RegisterKeyMap("k9_follow", function()
   dog:Follow()
 end, function() end, "K9 Following toggle", "keyboard", "g")
 
@@ -113,3 +113,8 @@ Utils.RegisterKeyMap("menu_back", function()
     K9Menu.OpenedMenu:GoBack()
   end
 end, function() end, "K9 menu back", "keyboard", "delete")
+
+Utils.RegisterKeyMap("k9_attack", function()
+  print("TRIGGERED KEY PRESS")
+  dog:Attack()
+end, function() end, "K9 Attack", "keyboard", "lmenu")

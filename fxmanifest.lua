@@ -17,8 +17,9 @@ files {
 -- Shared Base Scripts
 shared_script "shared/shared.lua"
 shared_script "shared/configs/*.lua"
+shared_script "shared/modulemanager.lua"
+shared_script "shared/models/*.lua"
 shared_script "shared/modules/*.lua"
-shared_script "shared/module.lua"
 
 -- Server Base Scripts
 server_script "server/server.lua"
