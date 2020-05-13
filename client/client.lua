@@ -8,53 +8,49 @@ RegisterNUICallback("k9_menu_ready", function()
 end)
 
 -- Base Menu Code
-local K9Menu = Menu.Create("K9", "Testing Description")
+-- local K9Menu = Menu.Create("K9", "Testing Description")
+local K9Menu = exports["xmenu"]:AddMenu("K9")
 
 -- Basic Actions
-local K9Basic = Menu.CreateSubMenu("Basic", K9Menu, K9Menu, "Basic Player Actions")
+local K9Basic = exports["xmenu"]:AddSubMenu("Basic", K9Menu)
 
-Menu.CreateButton("Spawn", function()
-  dog:Spawn()
-end, K9Menu, K9Basic)
-
-Menu.CreateButton("Despawn", function()
-  dog:Despawn()
-end, K9Menu, K9Basic)
-
-local BreedSlider = Menu.CreateRangeSlider("Breeds", function(self, action, value)
-  if action == "changed" then
-    self:UpdateText(breeds[value].label)
-  elseif action == "selected" then
-    dog:SetNewK9({ model = breeds[value].model })
+exports["xmenu"]:AddCheckbox("Spawn Toggle", K9Basic, function(state)
+  if state then
+    dog:Spawn()
+  else
+    dog:Despawn()
   end
-end, K9Menu, K9Basic, 1, 1, #breeds, 1)
+end)
+
+local list = exports["xmenu"]:AddList("List1", K9Basic, breeds, function(selected)
+  dog:SetNewK9({ model = selected })
+end)
 
 -- K9 Actions
-local K9Actions = Menu.CreateSubMenu("Actions", K9Menu, K9Menu, "K9 Specific Actions")
+local K9Actions = exports["xmenu"]:AddSubMenu("Actions", K9Menu)
 
-Menu.CreateButton("Follow", function()
+exports["xmenu"]:AddButton("Follow", K9Actions, function()
   dog:Follow()
-end, K9Menu, K9Actions)
+end)
 
-Menu.CreateButton("Stay", function()
+exports["xmenu"]:AddButton("Stay", K9Actions, function()
   dog:Stay()
-end, K9Menu, K9Actions)
+end)
 
-Menu.CreateButton("Attack", function()
+exports["xmenu"]:AddButton("Attack", K9Actions, function()
   dog:Attack()
-end, K9Menu, K9Actions)
+end)
 
-Menu.CreateButton("Enter Vehicle", function()
-  local vehicle = GetVehiclePedIsIn(PlayerPedId(), true)
+exports["xmenu"]:AddButton("Enter Vehicle", K9Actions, function()
   dog:EnterVehicle(vehicle)
-end, K9Menu, K9Actions)
+end)
 
-Menu.CreateButton("Exit Vehicle", function()
+exports["xmenu"]:AddButton("Exit Vehicle", K9Actions, function()
   dog:ExitVehicle()
-end, K9Menu, K9Actions)
+end)
 
 -- K9 Animations
-local K9Animations = Menu.CreateSubMenu("Animations", K9Menu, K9Menu, "K9 Aniamtions")
+local K9Animations = exports["xmenu"]:AddSubMenu("Actions", K9Menu)
 
 -- KEYBOARD CONTROLS
 Utils.RegisterKeyMap("k9_follow", function()
@@ -63,58 +59,10 @@ end, function() end, "K9 Following toggle", "keyboard", "g")
 
 Utils.RegisterKeyMap("open_menu", function()
   if not K9Menu.Opened then
-    K9Menu:OpenMenu()
-    K9Menu.Opened = true
+    exports["xmenu"]:OpenMenu(K9Menu)
   end
 end, function() end, "Open the K9 menu", "keyboard", "insert")
 
-Utils.RegisterKeyMap("menu_select", function()
-  if K9Menu.Opened then
-    K9Menu.OpenedMenu:FireComponent()
-  end
-end, function() end, "Select K9 menu option", "keyboard", "return")
-
-Utils.RegisterKeyMap("menu_up", function()
-  if K9Menu.Opened then
-    K9Menu.OpenedMenu:GoUp()
-  end
-end, function() end, "K9 menu up", "keyboard", "up")
-
-Utils.RegisterKeyMap("menu_down", function()
-  if K9Menu.Opened then
-    K9Menu.OpenedMenu:GoDown()
-  end
-end, function() end, "K9 menu down", "keyboard", "down")
-
-Utils.RegisterKeyMap("menu_left", function()
-  if K9Menu.Opened then
-    local selectedComponent = K9Menu.OpenedMenu.Components[K9Menu.OpenedMenu.Hovered]
-    if selectedComponent then
-      if selectedComponent.Type == "rangeslider" then
-        selectedComponent:GoLeft()
-      end
-    end
-  end
-end, function() end, "K9 menu left", "keyboard", "left")
-
-Utils.RegisterKeyMap("menu_right", function()
-  if K9Menu.Opened then
-    local selectedComponent = K9Menu.OpenedMenu.Components[K9Menu.OpenedMenu.Hovered]
-    if selectedComponent then
-      if selectedComponent.Type == "rangeslider" then
-        selectedComponent:GoRight()
-      end
-    end
-  end
-end, function() end, "K9 menu right", "keyboard", "right")
-
-Utils.RegisterKeyMap("menu_back", function()
-  if K9Menu.Opened then
-    K9Menu.OpenedMenu:GoBack()
-  end
-end, function() end, "K9 menu back", "keyboard", "delete")
-
 Utils.RegisterKeyMap("k9_attack", function()
-  print("TRIGGERED KEY PRESS")
   dog:Attack()
 end, function() end, "K9 Attack", "keyboard", "lmenu")

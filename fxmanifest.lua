@@ -6,14 +6,6 @@ description 'A modular K9 script built for FiveM.'
 author 'Xander1998'
 url 'https://github.com/xander1998/k9'
 
-ui_page("client/html/index.html")
-files {
-  "client/html/index.html",
-  "client/html/events.js",
-  "client/html/script.js",
-  "client/html/style.css"
-}
-
 -- Shared Base Scripts
 shared_script "shared/shared.lua"
 shared_script "shared/configs/*.lua"
