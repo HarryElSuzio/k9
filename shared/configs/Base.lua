@@ -1,1 +1,1 @@
-K9Overhaul.Configs.Module = "none"
+K9Overhaul.Configs.Module = "GENERATED"

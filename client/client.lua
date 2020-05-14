@@ -41,6 +41,10 @@ exports["xmenu"]:AddButton("Attack", K9Actions, function()
   dog:Attack()
 end)
 
+exports["xmenu"]:AddButton("Search Trunk", K9Actions, function()
+  dog:Search()
+end)
+
 exports["xmenu"]:AddButton("Enter Vehicle", K9Actions, function()
   dog:EnterVehicle(vehicle)
 end)
@@ -50,7 +54,10 @@ exports["xmenu"]:AddButton("Exit Vehicle", K9Actions, function()
 end)
 
 -- K9 Animations
-local K9Animations = exports["xmenu"]:AddSubMenu("Actions", K9Menu)
+local K9Animations = exports["xmenu"]:AddSubMenu("Animations", K9Menu)
+exports["xmenu"]:AddButton("Sit", K9Animations, function()
+  dog:Sit()
+end)
 
 -- KEYBOARD CONTROLS
 Utils.RegisterKeyMap("k9_follow", function()

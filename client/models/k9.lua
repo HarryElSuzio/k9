@@ -8,7 +8,8 @@ local Actions = {
   Search = 3,
   Attack = 4,
   Mounted = 5,
-  Animated = 6
+  Sit = 6,
+  Laydown = 7
 }
 
 local Animations = {
@@ -97,15 +98,6 @@ function K9:Spawn()
   SetPedRelationshipGroupHash(self.spawnedHandle, K9Unit)
 
   self:Stay()
-
-  -- Citizen.CreateThread(function()
-  --   while true do
-  --     Citizen.Wait(0)
-
-
-
-  --   end
-  -- end)
 end
 
 function K9:Despawn()
@@ -121,7 +113,6 @@ end
 function K9:Follow()
   if not self.spawnedHandle then return end
   if self.CurrentAction ~= Actions.Follow then
-    print("TRIGGERED")
     ClearPedTasks(self.spawnedHandle)
     TaskFollowToOffsetOfEntity(self.spawnedHandle, PlayerPedId(), 0.0, 0.0, 0.0, 5.0, -1, 0.0, true)
     self.CurrentAction = Actions.Follow
@@ -138,9 +129,9 @@ function K9:Stay()
 end
 
 function K9:Search()
-  if not self.spawnedHandle then return end
-  ModuleManager:CallFunc("GetVehicleInventory", "trunk", "000000", function(foundIllegal)
-    print(foundIllegal)
+  -- if not self.spawnedHandle then return end
+  ModuleManager:GetModule():Fire("SearchTrunk", function(foundIllegal)
+    print("FOUND ILLEGAL: " .. tostring(foundIllegal))
   end)
 end
 
@@ -149,21 +140,13 @@ function K9:Attack()
   ClearPedTasks(self.spawnedHandle)
   local found, target = GetEntityPlayerIsFreeAimingAt(PlayerId())
   if found then
-    print("Found")
     if IsEntityAPed(target) then
-      print("ATTACKING")
       TaskCombatPed(self.spawnedHandle, target, 0, 16)
       SetPedRelationshipGroupHash(target, K9Target)
     end
   end
 
   self.CurrentAction = Actions.Attack
-end
-
-function K9:Animate(animDic, animName)
-  if not self.spawnedHandle then return end
-  ClearPedTasks(self.spawnedHandle)
-  self.CurrentAction = Actions.Animated
 end
 
 function K9:EnterVehicle(vehicle)
@@ -177,8 +160,17 @@ function K9:EnterVehicle(vehicle)
   local doorIndex = Utils.DoorIndicies[door]
   local doorBone = Utils.DoorBones[door]
 
+  print(seat)
+  print(doorBone)
+
   SetVehicleDoorOpen(vehicle, doorIndex, false, false)
-  TaskGoToCoordAnyMeans(self.spawnedHandle, pos.x - fvX, pos.y - fvY, pos.z, 2.0, 0, 0, 786603, 0.25)
+  if pos then
+    TaskGoToCoordAnyMeans(self.spawnedHandle, pos.x - fvX, pos.y - fvY, pos.z, 2.0, 0, 0, 786603, 0.25)
+  else
+    local vehiclePos = GetEntityCoords(vehicle)
+    TaskGoToCoordAnyMeans(self.spawnedHandle, vehiclePos.x - fvX, vehiclePos.y - fvY, vehiclePos.z, 2.0, 0, 0, 786603, 0.25)
+  end
+
   Citizen.Wait(1500)
   TaskTurnPedToFaceEntity(self.spawnedHandle, vehicle, -1)
   Citizen.Wait(2000)
@@ -202,6 +194,7 @@ function K9:EnterVehicle(vehicle)
 
   local dogBone = GetEntityBoneIndexByName(self.spawnedHandle, "root")
   local vehSeatBone = GetEntityBoneIndexByName(vehicle, seat)
+
   AttachEntityToEntity(self.spawnedHandle, vehicle, vehSeatBone, 0.0, -0.1, 0.4, 0.0, 0.0, 0.0, 0, false, false, true, 0, true)
 
   Citizen.Wait(250)
@@ -238,4 +231,28 @@ function K9:ExitVehicle()
   self.EnteredDoor = nil
   self.EnteredDoorBone = nil
   self.CurrentAction = Actions.Stay
+end
+
+function K9:Sit(ending)
+  if not self.spawnedHandle then return end
+
+  ClearPedTasks(self.spawnedHandle)
+
+  local animdic = Animations.Sit.dict
+  local anim = Animations.Sit.anims.base
+  
+  print("HELLO: ", animdic, anim)
+
+  RequestAnimDict(animdic)
+  while not HasAnimDictLoaded(animdic) do
+    Citizen.Wait(0)
+    print("WAITING")
+  end
+
+  TaskPlayAnim(self.spawnedHandle, animdic, anim, 8.0, -8.0, -1, 2, 0.0, false, false, false)
+  self.CurrentAction = Actions.Sit
+end
+
+function K9:Animate(animDict, animName)
+
 end

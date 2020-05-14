@@ -14,16 +14,18 @@ Utils.DoorSeats = {
 }
 
 function Utils.GetClosestVehicleDoor(pos, vehicle)
-  local closestBonePos = -1
+  local closestBonePos = nil
   local closestDoor = nil
-  local closestDistance = -1
+  local closestDistance = nil
+
   for k, v in pairs(Utils.DoorIndicies) do
     local doorBone = Utils.DoorBones[k]
-    local bonePos = GetWorldPositionOfEntityBone(vehicle, GetEntityBoneIndexByName(vehicle, doorBone))
-    if bonePos.x ~= 0 and bonePos.y ~= 0 and bonePos.z ~= 0 then
+    local doorBoneIndex = GetEntityBoneIndexByName(vehicle, doorBone)
+    local bonePos = GetWorldPositionOfEntityBone(vehicle, doorBoneIndex)
+
+    if bonePos then
       local distance = Vdist2(pos.x, pos.y, pos.z, bonePos.x, bonePos.y, bonePos.z)
-      if closestDistance == -1 or closestDistance > distance then
-        print("[" .. k .. "] was closer than " .. tostring(closestDoor))
+      if closestDistance == nil or closestDistance > distance then
         closestBonePos = bonePos
         closestDoor = k
         closestDistance = distance

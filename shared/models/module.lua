@@ -11,10 +11,11 @@ function Module.New(name)
   return newModule
 end
 
-function Module:AddFunc(key, action)
-  self.Functions[key] = action
+function Module:AddFunction(name, func)
+  self.Functions[name] = func
 end
 
-function Module:CallFunc(key, ...)
-  self.Functions[key](...)
+function Module:Fire(name, callback)
+  print("NAME: " .. name)
+  self.Functions[name](callback)
 end
