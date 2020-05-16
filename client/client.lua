@@ -46,6 +46,7 @@ exports["xmenu"]:AddButton("Search Trunk", K9Actions, function()
 end)
 
 exports["xmenu"]:AddButton("Enter Vehicle", K9Actions, function()
+  local vehicle = GetVehiclePedIsIn(PlayerPedId(), true)
   dog:EnterVehicle(vehicle)
 end)
 

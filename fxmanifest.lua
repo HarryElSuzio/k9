@@ -1,3 +1,5 @@
+--[[ Scripted By: Xander1998 ]]--
+
 fx_version 'adamant'
 game 'gta5'
 

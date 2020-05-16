@@ -88,6 +88,7 @@ function K9:Spawn()
 
   SetBlockingOfNonTemporaryEvents(self.spawnedHandle, true)
   GiveWeaponToPed(self.spawnedHandle, GetHashKey("WEAPON_ANIMAL"), 200, true, true);
+  SetPedMoveRateOverride(self.spawnedHandle, 10.0)
 
   local fleeAttributes = {0, 3, 5, 46}
   for _, v in pairs(fleeAttributes) do
@@ -151,6 +152,9 @@ end
 
 function K9:EnterVehicle(vehicle)
   if not self.spawnedHandle then return end
+  if not vehicle then return end
+  if vehicle == -1 or vehicle == 0 then return end
+
   ClearPedTasks(self.spawnedHandle)
   local fwv = GetEntityForwardVector(vehicle)
   local fvX, fvY = fwv.x * 1.2, fwv.y * 1.2
@@ -159,9 +163,6 @@ function K9:EnterVehicle(vehicle)
   local seat = Utils.GetSeatBoneFromDoor(door)
   local doorIndex = Utils.DoorIndicies[door]
   local doorBone = Utils.DoorBones[door]
-
-  print(seat)
-  print(doorBone)
 
   SetVehicleDoorOpen(vehicle, doorIndex, false, false)
   if pos then
@@ -192,7 +193,6 @@ function K9:EnterVehicle(vehicle)
 
   Citizen.Wait(1500)
 
-  local dogBone = GetEntityBoneIndexByName(self.spawnedHandle, "root")
   local vehSeatBone = GetEntityBoneIndexByName(vehicle, seat)
 
   AttachEntityToEntity(self.spawnedHandle, vehicle, vehSeatBone, 0.0, -0.1, 0.4, 0.0, 0.0, 0.0, 0, false, false, true, 0, true)
