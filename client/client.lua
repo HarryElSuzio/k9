@@ -8,13 +8,12 @@ RegisterNUICallback("k9_menu_ready", function()
 end)
 
 -- Base Menu Code
--- local K9Menu = Menu.Create("K9", "Testing Description")
-local K9Menu = exports["xmenu"]:AddMenu("K9")
+local K9Menu = xMenu.New("K9")
 
 -- Basic Actions
-local K9Basic = exports["xmenu"]:AddSubMenu("Basic", K9Menu)
+local K9Basic = K9Menu:BindSubMenu("Basic")
 
-exports["xmenu"]:AddCheckbox("Spawn Toggle", K9Basic, function(state)
+K9Basic:BindCheckbox("Spawn Toggle", function(state)
   if state then
     dog:Spawn()
   else
@@ -22,41 +21,41 @@ exports["xmenu"]:AddCheckbox("Spawn Toggle", K9Basic, function(state)
   end
 end)
 
-local list = exports["xmenu"]:AddList("List1", K9Basic, breeds, function(selected)
+K9Basic:BindList("Breeds", breeds, function(selected)
   dog:SetNewK9({ model = selected })
 end)
 
 -- K9 Actions
-local K9Actions = exports["xmenu"]:AddSubMenu("Actions", K9Menu)
+local K9Actions = K9Menu:BindSubMenu("Actions")
 
-exports["xmenu"]:AddButton("Follow", K9Actions, function()
+K9Actions:BindButton("Follow", function()
   dog:Follow()
 end)
 
-exports["xmenu"]:AddButton("Stay", K9Actions, function()
+K9Actions:BindButton("Stay", function()
   dog:Stay()
 end)
 
-exports["xmenu"]:AddButton("Attack", K9Actions, function()
+K9Actions:BindButton("Attack", function()
   dog:Attack()
 end)
 
-exports["xmenu"]:AddButton("Search Trunk", K9Actions, function()
+K9Actions:BindButton("Search Trunk", function()
   dog:Search()
 end)
 
-exports["xmenu"]:AddButton("Enter Vehicle", K9Actions, function()
-  local vehicle = GetVehiclePedIsIn(PlayerPedId(), true)
-  dog:EnterVehicle(vehicle)
+K9Actions:BindButton("Enter Vehicle", function()
+  dog:EnterVehicle(GetVehiclePedIsIn(PlayerPedId(), true))
 end)
 
-exports["xmenu"]:AddButton("Exit Vehicle", K9Actions, function()
+K9Actions:BindButton("Exit Vehicle", function()
   dog:ExitVehicle()
 end)
 
 -- K9 Animations
-local K9Animations = exports["xmenu"]:AddSubMenu("Animations", K9Menu)
-exports["xmenu"]:AddButton("Sit", K9Animations, function()
+local K9Actions = K9Menu:BindSubMenu("Animations")
+
+K9Actions:BindButton("Sit", function()
   dog:Sit()
 end)
 
@@ -67,7 +66,7 @@ end, function() end, "K9 Following toggle", "keyboard", "g")
 
 Utils.RegisterKeyMap("open_menu", function()
   if not K9Menu.Opened then
-    exports["xmenu"]:OpenMenu(K9Menu)
+    K9Menu:OpenMenu()
   end
 end, function() end, "Open the K9 menu", "keyboard", "insert")
 

@@ -19,6 +19,8 @@ shared_script "shared/modules/*.lua"
 server_script "server/server.lua"
 
 -- Client Base Scripts
+client_script "@xmenu/classes/menu.lua"
+client_script "@xmenu/classes/submenu.lua"
 client_script "client/models/*.lua"
 client_script "client/menu/models/*.lua"
 client_script "client/utils.lua"
